@@ -4,6 +4,7 @@ import { authModalState } from '@/atoms/authModalAtom';
 import AuthModal from '@/components/Modals/AuthModal';
 import Navbar from '@/components/Navbar/Navbar';
 import { auth } from '@/firebase/firebase';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -33,7 +34,7 @@ const AuthPage:React.FC<AuthPageProps> = () => {
                 <Navbar />
                 <div className='flex items-center justify-center h-[calc(100vh-5rem)] 
                 pointer-events-none select-none'>
-                    <img src="/hero.png" alt="Hero Img"/>
+                    <Image src="/hero.png" alt="Hero Img" height={800} width={800}/>
                 </div>
                 {authModal.isOpen && <AuthModal /> }
             </div>
