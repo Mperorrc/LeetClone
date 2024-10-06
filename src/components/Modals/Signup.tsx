@@ -6,6 +6,7 @@ import {useCreateUserWithEmailAndPassword} from 'react-firebase-hooks/auth'
 import { auth } from '@/firebase/firebase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
 
 type SignupProps = {
     
@@ -56,7 +57,7 @@ const Signup:React.FC<SignupProps> = () => {
             }
             router.push("/");
         } catch (error:any) {
-            alert(error.message);
+            toast.error(error.message, {position:"top-center", autoClose:3000, theme:"dark"});
         }
     }
 

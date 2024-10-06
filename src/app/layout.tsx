@@ -2,6 +2,8 @@
 import { RecoilRoot } from "recoil";
 import "./globals.css";
 import Head from "next/head";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function RootLayout({
   children,
@@ -20,6 +22,7 @@ export default function RootLayout({
       </Head>
       <html lang="en">
         <body>
+          <ToastContainer />
           <RecoilRoot>
             {children}
           </RecoilRoot>

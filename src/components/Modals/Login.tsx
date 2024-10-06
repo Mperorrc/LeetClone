@@ -3,6 +3,7 @@ import { auth } from '@/firebase/firebase';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { toast } from 'react-toastify';
 import { useSetRecoilState } from 'recoil';
 
 type LoginProps = {
@@ -32,7 +33,7 @@ const Login:React.FC<LoginProps> = () => {
         e.preventDefault();
         try {
             if(!inputs.email || !inputs.password){
-                alert("Please fill all the fields");
+                toast.error("Please fill all the fields", {position:"top-center", autoClose:3000, theme:"dark"});
             }
 
             const newUser = await signInWithEmailAndPassword(inputs.email,inputs.password);
@@ -46,7 +47,7 @@ const Login:React.FC<LoginProps> = () => {
             if(newUser) router.push("/");
 
         } catch (error:any) {
-            alert(error.message);
+            toast.error(error.message, {position:"top-center", autoClose:3000, theme:"dark"});
         }
     }
 
