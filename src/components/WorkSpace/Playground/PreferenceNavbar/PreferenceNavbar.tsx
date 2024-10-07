@@ -8,7 +8,7 @@ type PreferenceNavbarProps = {
 const PreferenceNavbar:React.FC<PreferenceNavbarProps> = () => {
     
     return(
-        <div className='flex items-center justify-between bg-dark-layer-2 h-11 w-full'>
+        <div className='flex items-center justify-between bg-dark-layer-2 h-11 w-full overflow-x-hidden'>
             <div className='flex items-center text-white'>
                 <button className='flex cursor-pointer items-center rounded 
                     focus:outline-none bg-dark-fill-3 text-dark-label-2

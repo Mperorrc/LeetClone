@@ -31,7 +31,7 @@ const Workspace:React.FC<WorkspaceProps> = () => {
 
   return (
     <div 
-      className="w-full flex flex-row bg-gradient-to-b from-black to-gray-900 relative text-white" 
+      className="w-full flex flex-row relative text-white" 
       style={{ height: 'calc(100vh - 50px)' }}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -41,7 +41,7 @@ const Workspace:React.FC<WorkspaceProps> = () => {
         <ProblemDescription />
       </div>
       <div
-        className='bg-dark-fill-3 cursor-col-resize hover:bg-custom-blue'
+        className='bg-dark-layer-2 cursor-col-resize hover:bg-custom-blue'
         style={{ width: '8px' }}
         onMouseDown={handleMouseDown}
       />
