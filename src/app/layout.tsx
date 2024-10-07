@@ -1,6 +1,6 @@
 "use client"
 import { RecoilRoot } from "recoil";
-import "./globals.css";
+import "../styles/globals.css";
 import Head from "next/head";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
