@@ -2,11 +2,12 @@
 import React, { useState } from 'react';
 import ProblemDescription from './ProblemDescription/ProblemDescription';
 import Playground from './Playground/Playground';
+import { Problem } from '@/utils/types/problem';
 
 type WorkspaceProps = {
-    
+    problem : Problem
 };
-const Workspace:React.FC<WorkspaceProps> = () => {
+const Workspace:React.FC<WorkspaceProps> = ({problem}) => {
 
     const [leftWidth, setLeftWidth] = useState('calc(50vw - 4px)');
   const [rightWidth, setRightWidth] = useState('calc(50vw - 4px)');
@@ -50,7 +51,7 @@ const Workspace:React.FC<WorkspaceProps> = () => {
       onMouseLeave={handleMouseUp}
     >
       <div style={{ width: leftWidth }}>
-        <ProblemDescription />
+        <ProblemDescription problem={problem} />
       </div>
       <div
         className='bg-dark-layer-2 cursor-col-resize hover:bg-custom-blue'
@@ -58,7 +59,7 @@ const Workspace:React.FC<WorkspaceProps> = () => {
         onMouseDown={handleMouseDown}
       />
       <div style={{ width: rightWidth }}>
-        <Playground />
+        <Playground problem={problem}/>
       </div>
     </div>
   );

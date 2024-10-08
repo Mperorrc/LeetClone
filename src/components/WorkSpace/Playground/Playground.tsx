@@ -5,19 +5,18 @@ import CodeMirror from "@uiw/react-codemirror"
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { javascript } from '@codemirror/lang-javascript';
 import EditorFooter from './EditorFooter';
+import { Problem } from '@/utils/types/problem';
 
 type PlaygroundProps = {
-    
+    problem:Problem
 };
 
-const Playground:React.FC<PlaygroundProps> = () => {
+const Playground:React.FC<PlaygroundProps> = ({problem}) => {
     const [topHeight, setTopHeight] = useState<string>('calc(60vh - 4px)');
     const [bottomHeight, setBottomHeight] = useState<string>('calc(40vh - 4px)');
     const [isDragging, setIsDragging] = useState<boolean>(false);
 
-    const boilerPlate = `function twoSum(nums, target) {
-    // Write your code here
-};`;
+    const [activeTestCaseId, setActiveTestCaseId] = useState<number>(0);
 
     const handleMouseDown = (): void => {
         setIsDragging(true);
@@ -51,7 +50,7 @@ const Playground:React.FC<PlaygroundProps> = () => {
                     
                     <div className='w-full overflow-auto' style={{ height: topHeight }}>
                         <CodeMirror 
-                            value={boilerPlate}
+                            value={problem.starterCode}
                             theme={vscodeDark}
                             extensions={[javascript()]}
                             style={{fontSize:16}}
@@ -73,40 +72,25 @@ const Playground:React.FC<PlaygroundProps> = () => {
                         </div>
 
                         <div className="flex">
-                            <div className='mr-2 items-start mt-2 text-white'>
-                                <div className='flex flex-wrap items-center gap-y-4'>
-                                    <div className='font-medium items-center transition-all 
-                                        focus:outline-none inline-flex bg-dark-fill-3 hover:bg-dark-fill-2 
-                                        relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap'
+                            {problem.examples.map((example,index)=>{
+                                return (
+                                    <div className='mr-2 items-start mt-2' key={example.id}
+                                        onClick={()=>{setActiveTestCaseId(example.id)}}
                                     >
-                                        Case 1
+                                        <div className='flex flex-wrap items-center gap-y-4'>
+                                            <div className={`font-medium items-center transition-all 
+                                                focus:outline-none inline-flex bg-dark-fill-3 hover:bg-dark-fill-2 
+                                                relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap
+                                                ${activeTestCaseId === example.id?"text-white": "text-gray-500"}`
+                                            }
+                                            >
+                                                Case {index+1}:
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div className='mr-2 items-start mt-2 text-white'>
-                                <div className='flex flex-wrap items-center gap-y-4'>
-                                    <div className='font-medium items-center transition-all 
-                                        focus:outline-none inline-flex bg-dark-fill-3 hover:bg-dark-fill-2 
-                                        relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap'
-                                    >
-                                        Case 2
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='mr-2 items-start mt-2 text-white'>
-                                <div className='flex flex-wrap items-center gap-y-4'>
-                                    <div className='font-medium items-center transition-all 
-                                        focus:outline-none inline-flex bg-dark-fill-3 hover:bg-dark-fill-2 
-                                        relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap'
-                                    >
-                                        Case 3
-                                    </div>
-                                </div>
-                            </div>
-
-
+                                )
+                            })}
+                            
                         </div>
 
                         <div className='font-semibold my-4'>
@@ -117,7 +101,7 @@ const Playground:React.FC<PlaygroundProps> = () => {
                                 py-[10px] bg-dark-fill-3 border-transparent text-white
                                 mt-2 '
                             >
-                                nums:[2,7,11,15], target: 9
+                                {problem.examples[activeTestCaseId].inputText}
                             </div>
                             <p className='text-sm font-medium mt-4 text-white'>
                                 Output:
@@ -126,7 +110,7 @@ const Playground:React.FC<PlaygroundProps> = () => {
                                 py-[10px] bg-dark-fill-3 border-transparent text-white
                                 mt-2 '
                             >
-                                [0,1]
+                                {problem.examples[activeTestCaseId].outputText}
                             </div>
                         </div>
 

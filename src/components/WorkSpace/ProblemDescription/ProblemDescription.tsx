@@ -1,13 +1,15 @@
+import { Problem } from '@/utils/types/problem';
+import Image from 'next/image';
 import React from 'react';
 import { AiFillDislike, AiFillLike } from 'react-icons/ai';
 import { BsCheck2Circle } from 'react-icons/bs';
 import { TiStarOutline } from 'react-icons/ti';
 
 type ProblemDescriptionProps = {
-    
+    problem:Problem
 };
 
-const ProblemDescription:React.FC<ProblemDescriptionProps> = () => {
+const ProblemDescription:React.FC<ProblemDescriptionProps> = ({problem}) => {
     
     return (
         <div className='bg-dark-layer-1'>
@@ -23,7 +25,7 @@ const ProblemDescription:React.FC<ProblemDescriptionProps> = () => {
 					{/* Problem heading */}
 					<div className='w-full'>
 						<div className='flex space-x-4'>
-							<div className='flex-1 mr-2 text-lg text-white font-medium'>PROBLEM TITLE</div>
+							<div className='flex-1 mr-2 text-lg text-white font-medium'>{problem.title}</div>
 						</div>
 							<div className='flex items-center mt-3'>
 								<div
@@ -58,34 +60,50 @@ const ProblemDescription:React.FC<ProblemDescriptionProps> = () => {
 
 						{/* Problem Statement(paragraphs) */}
 						<div className='text-white text-sm'>
-							<p className='mt-3'>
-								Some Random question text <code>idk</code>
-							</p>
+							<div dangerouslySetInnerHTML={{
+									__html: problem.problemStatement
+								}} 
+							/>
 						</div>
 
 						{/* Examples */}
 						<div className='mt-4'>
-							<div>
-								<p className='font-medium text-white '>Example 1: </p>
-								<div className='example-card'>
-									<pre>
-										<strong className='text-white'>Input: </strong> nums = [1,3,4,5], target = 9{" "}
-										<br />
-										<strong>Output:</strong>
-										[0,1] <br />
-											<>
-												<strong>Explanation:</strong> Some random explanation
-											</>
-									</pre>
-								</div>
-							</div>
+							{problem.examples.map((example,index)=>{
+								return(
+									<div key={example.id}>
+										<p className='font-medium text-white'>
+											Example {index+1}:
+										</p>
+										{example.img && (
+											<Image src={example.img} alt={`Example ${index+1} image`} height={400} width={400} className='overflow-x-hidden mt-2'/>
+										)}
+										<div className='example-card'>
+											<pre>
+												<strong className='text-white'>Input: </strong> {example.inputText}
+												<br />
+												<strong>Output: </strong> {example.outputText}
+												{
+													example.explanation && (
+														<>
+															<br />
+															<strong>Explanation: </strong> {example.explanation}
+														</>
+													)
+												}
+												
+											</pre>
+
+										</div>
+									</div>
+								)
+							})}
 						</div>
 
 						{/* Constraints */}
-						<div className='my-8 pb-4'>
+						<div className='my-8 pb-5'>
 							<div className='text-white text-sm font-medium'>Constraints:</div>
 							<ul className='text-white ml-5 list-disc '>
-								{/* <div dangerouslySetInnerHTML={{ __html: problem.constraints }} /> */}
+								<div dangerouslySetInnerHTML={{ __html: problem.constraints }} />
 							</ul>
 						</div>
 					</div>
