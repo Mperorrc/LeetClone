@@ -20,14 +20,26 @@ const Workspace:React.FC<WorkspaceProps> = () => {
     setIsDragging(false);
   };
 
-  const handleMouseMove = (e:React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>): void => {
     if (isDragging) {
-      const newLeftWidth = `calc(50vw - 4px + ${e.clientX - window.innerWidth / 2}px)`;
-      const newRightWidth = `calc(50vw - 4px - ${e.clientX - window.innerWidth / 2}px)`;
-      setLeftWidth(newLeftWidth);
-      setRightWidth(newRightWidth);
+        const minRightWidth = window.innerHeight * 0.4; 
+        const totalWidth = window.innerWidth - 8;
+
+        let newRightWidth = `calc(50vw - 4px - ${e.clientX - window.innerWidth / 2}px)`;
+        let newRightWidthPixels = (window.innerWidth / 2 - 4 - (e.clientX - window.innerWidth / 2));
+
+        if (newRightWidthPixels < minRightWidth) {
+            newRightWidthPixels = minRightWidth;
+            newRightWidth = `${minRightWidth}px`;
+        }
+
+        const newLeftWidthPixels = totalWidth - newRightWidthPixels;
+        const newLeftWidth = `${newLeftWidthPixels}px`;
+
+        setLeftWidth(newLeftWidth);
+        setRightWidth(newRightWidth);
     }
-  };
+};
 
   return (
     <div 
