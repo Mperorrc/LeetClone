@@ -60,7 +60,7 @@ const TopBar:React.FC<TopBarProps> = ({problemPage}) => {
 							Premium
 						</Link>
 					</div>
-					{problemPage && <Timer />}
+					{problemPage && user && <Timer />}
 					{!loading && ( user ? (
 						<div className='cursor-pinter group relative'>
 							<Image src="/avatar.png" alt="use profile" height={30} width={30}/>

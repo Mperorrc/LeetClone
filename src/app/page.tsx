@@ -12,8 +12,8 @@ export default function Home() {
 				>
 					&ldquo; QUALITY OVER QUANTITY &rdquo; 👇
 				</h1>
-				<div className='relative overflow-x-auto mx-auto px-6 pb-10'>
-					<table className='text-sm text-left text-gray-500 dark:text-gray-400 sm:w-7/12 w-full max-w-[1200px] mx-auto'>
+        <div className='relative overflow-x-auto mx-auto px-6 pb-10'>
+          <table className='text-sm text-left text-gray-500 dark:text-gray-400 sm:w-7/12 w-full max-w-[1200px] mx-auto'>
             <thead className='text-xs text-gray-700 uppercase dark:text-gray-400 border-b '>
               <tr>
                 <th scope='col' className='px-1 py-3 w-0 font-medium'>
@@ -34,9 +34,9 @@ export default function Home() {
                 </th>
               </tr>
             </thead>
-            <ProblemsTable />
-					</table>
-				</div>
+            <ProblemsTable/>
+          </table>
+        </div>
       </main>
     </>
   );

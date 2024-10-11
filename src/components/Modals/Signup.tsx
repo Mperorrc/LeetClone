@@ -3,10 +3,11 @@ import { authModalState } from '@/atoms/authModalAtom';
 import React, { useEffect, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import {useCreateUserWithEmailAndPassword} from 'react-firebase-hooks/auth'
-import { auth } from '@/firebase/firebase';
+import { auth, firestore } from '@/firebase/firebase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
+import { doc, setDoc } from 'firebase/firestore';
 
 type SignupProps = {
     
@@ -29,6 +30,7 @@ const Signup:React.FC<SignupProps> = () => {
         setAuthModalstate((prev) => ({...prev, type: "login"}))
     };
 
+    
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) =>{
         setInputs((prev)=>({...prev,[e.target.name]:e.target.value}));
     };
@@ -36,8 +38,7 @@ const Signup:React.FC<SignupProps> = () => {
     const handleRegister = async (e:React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
         try {
-            console.log(inputs.password, inputs.resetPassword);
-
+            toast.loading("Registering User...", {position:"top-center", toastId:"loadingToast" ,autoClose:6000, theme:"dark"});
             if(!inputs.email || !inputs.username || !inputs.password){
                 throw new Error("Please fill all the fields");
             }
@@ -55,9 +56,27 @@ const Signup:React.FC<SignupProps> = () => {
             if(!newUser){
                 throw new Error("User Creation Failed!");
             }
+
+            const userData = {
+                uid: newUser.user.uid,
+                displayName: inputs.username,
+                email: newUser.user.email,
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                likedProblems:[],
+                dislikedProblems:[],
+                starredProblems:[],
+                solvedProblems:[]
+            }
+
+            await setDoc(doc(firestore,"users",newUser.user.uid), userData);
+            
             router.push("/");
         } catch (error:any) {
             toast.error(error.message, {position:"top-center", autoClose:3000, theme:"dark"});
+        }
+        finally{
+            toast.dismiss("loadingToast");
         }
     }
 
