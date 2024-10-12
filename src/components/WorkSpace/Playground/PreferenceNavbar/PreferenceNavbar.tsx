@@ -23,7 +23,7 @@ const PreferenceNavbar:React.FC<PreferenceNavbarProps> = ({settings,setSettings}
     }
 
     useEffect(()=>{
-        function exitHandler(e:any){
+        function exitHandler(){
             if(!document.fullscreenElement){
                 setIsFullScreen(false);
                 return;

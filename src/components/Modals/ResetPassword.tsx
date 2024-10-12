@@ -3,13 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth';
 import { toast } from 'react-toastify';
 
-type ResetPasswordProps = {
-    
-};
 
-const ResetPassword:React.FC<ResetPasswordProps> = () => {
+const ResetPassword:React.FC = () => {
 	const [email,setEmail] = useState("");
-	const [sendPasswordResetEmail, sending, error] = useSendPasswordResetEmail(
+	const [sendPasswordResetEmail,_, error] = useSendPasswordResetEmail(
 		auth
 	);
 

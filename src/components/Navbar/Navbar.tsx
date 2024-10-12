@@ -4,11 +4,8 @@ import Link from 'next/link';
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
 
-type NavbarProps = {
-    
-};
 
-const Navbar:React.FC<NavbarProps> = () => {
+const Navbar:React.FC = () => {
 
     const setAuthModalstate = useSetRecoilState(authModalState);
 

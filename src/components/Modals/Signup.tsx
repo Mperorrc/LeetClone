@@ -1,6 +1,6 @@
 "use client"
 import { authModalState } from '@/atoms/authModalAtom';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import {useCreateUserWithEmailAndPassword} from 'react-firebase-hooks/auth'
 import { auth, firestore } from '@/firebase/firebase';
@@ -9,11 +9,8 @@ import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { doc, setDoc } from 'firebase/firestore';
 
-type SignupProps = {
-    
-};
 
-const Signup:React.FC<SignupProps> = () => {
+const Signup:React.FC = () => {
     const router = useRouter();
     
     const setAuthModalstate = useSetRecoilState(authModalState);
@@ -21,9 +18,7 @@ const Signup:React.FC<SignupProps> = () => {
     
     const [
         createUserWithEmailAndPassword,
-        user,
         loading,
-        error
     ] = useCreateUserWithEmailAndPassword(auth);
 
     const handleClick = () =>{

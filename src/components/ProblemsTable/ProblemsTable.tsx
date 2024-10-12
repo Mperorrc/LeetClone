@@ -10,11 +10,7 @@ import { BsCheckCircle } from 'react-icons/bs';
 import { IoClose } from 'react-icons/io5';
 import YouTube from 'react-youtube';
 
-type ProblemsTableProps = {
-    
-};
-
-const ProblemsTable:React.FC<ProblemsTableProps> = () => {
+const ProblemsTable:React.FC = () => {
     
     const solvedProblems = useGetSolvedProblems();
     const [youtubePlayer, setYoutubePlayer] = useState({

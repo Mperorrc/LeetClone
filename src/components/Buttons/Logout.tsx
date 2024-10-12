@@ -4,13 +4,11 @@ import { useSignOut } from 'react-firebase-hooks/auth';
 import { FiLogOut } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 
-type LogoutProps = {
-    
-};
 
-const Logout:React.FC<LogoutProps> = () => {
+
+const Logout:React.FC = () => {
     
-    const [signOut, loading, error] = useSignOut(auth);
+    const [signOut] = useSignOut(auth);
 
     const handleLogout = async()=>{
         try {

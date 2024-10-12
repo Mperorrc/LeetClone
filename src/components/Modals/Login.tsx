@@ -1,16 +1,13 @@
 import { authModalState } from '@/atoms/authModalAtom';
 import { auth } from '@/firebase/firebase';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { toast } from 'react-toastify';
 import { useSetRecoilState } from 'recoil';
 
-type LoginProps = {
-    
-};
 
-const Login:React.FC<LoginProps> = () => {
+const Login:React.FC = () => {
     
     const router = useRouter();
     const setAuthModalstate = useSetRecoilState(authModalState);
@@ -20,9 +17,7 @@ const Login:React.FC<LoginProps> = () => {
 
     const [
         signInWithEmailAndPassword,
-        user,
-        loading,
-        error,
+        loading
     ] = useSignInWithEmailAndPassword(auth);
 
     const handleInputChange =(e:React.ChangeEvent<HTMLInputElement>)=>{

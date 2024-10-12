@@ -46,8 +46,8 @@ const TopBar:React.FC<TopBarProps> = ({problemPage}) => {
 			console.log(newPathName);
 			router.push(newPathName);
 
-		} catch (error:any) {
-			console.log(error.message);
+		} catch (error) {
+			console.log(error);
 		}
 	}
 
