@@ -31,7 +31,7 @@ const Playground:React.FC<PlaygroundProps> = ({problem, setSuccess,setSolved}) =
     const [bottomHeight, setBottomHeight] = useState<string>('calc(40vh - 4px)');
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [userCode,setUserCode] = useState<string>(problem.starterCode); 
-    const [fontSize, _] = useLocalStorage("leetClone-fontSize", "16px");
+    const [fontSize] = useLocalStorage("leetClone-fontSize", "16px");
     const [settings,setSettings] = useState<Isettings>({
         fontSize:fontSize,
         settingsModalOpen:false,

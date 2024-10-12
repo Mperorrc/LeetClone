@@ -12,7 +12,7 @@ interface SettingsModalProps {
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({settings,setSettings}) => {
-	const [_,setFontSize] = useLocalStorage("leetClone-fontSize", "16px");
+	const [setFontSize] = useLocalStorage("leetClone-fontSize", "16px");
 
 	const handleClickDropdown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.stopPropagation();
