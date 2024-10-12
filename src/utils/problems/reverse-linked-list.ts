@@ -6,9 +6,9 @@ class LinkedList {
 	value: number;
 	next: LinkedList | null;
 
-	constructor(value: number) {
+	constructor(value: number,next=null) {
 		this.value = value;
-		this.next = null;
+		this.next = next;
 	}
 
 	reverse(): LinkedList {
