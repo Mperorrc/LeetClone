@@ -1,7 +1,12 @@
+"use client"
 import ProblemsTable from "@/components/ProblemsTable/ProblemsTable";
 import TopBar from "@/components/TopBar/page";
+import useHasMounted from "@/hooks/useHasMounted";
 
 export default function Home() {
+  const hasMounted = useHasMounted();
+  if (!hasMounted) return null;
+
   return (
     <>
       <main className="bg-dark-layer-2 min-h-screen">

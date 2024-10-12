@@ -1,22 +1,84 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PreferenceNavbar from './PreferenceNavbar/PreferenceNavbar';
 import CodeMirror from "@uiw/react-codemirror"
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { javascript } from '@codemirror/lang-javascript';
 import EditorFooter from './EditorFooter';
 import { Problem } from '@/utils/types/problem';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth, firestore } from '@/firebase/firebase';
+import { toast } from 'react-toastify';
+import { usePathname } from 'next/navigation';
+import { problems } from '@/utils/problems';
+import { arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
 
 type PlaygroundProps = {
-    problem:Problem
+    problem:Problem;
+    setSuccess:React.Dispatch<React.SetStateAction<boolean>>;
+    setSolved:React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Playground:React.FC<PlaygroundProps> = ({problem}) => {
+const Playground:React.FC<PlaygroundProps> = ({problem, setSuccess,setSolved}) => {
     const [topHeight, setTopHeight] = useState<string>('calc(60vh - 4px)');
     const [bottomHeight, setBottomHeight] = useState<string>('calc(40vh - 4px)');
     const [isDragging, setIsDragging] = useState<boolean>(false);
+    const [userCode,setUserCode] = useState<string>(problem.starterCode); 
+
+    const [user] =useAuthState(auth);
 
     const [activeTestCaseId, setActiveTestCaseId] = useState<number>(0);
+    const pid = usePathname().split("/").pop();
+
+    const handleSubmit = async ()=>{
+        if(!user){
+            toast.error("Please login in to perform code submissions",{position:"top-center", autoClose:3000, theme:"dark"});
+            return;
+        }
+        
+        try {
+            const submittedUserCode = userCode.slice(userCode.indexOf(problem.starterFunctionName))
+            const callBackFunction = new Function(`return ${submittedUserCode}`)();
+            const handlerFunction = problems[pid as string].handlerFunction;
+
+            if(typeof handlerFunction === "function"){
+                
+                const success = handlerFunction(callBackFunction);
+                if(success){
+                    const userRef = doc(firestore,"users",user.uid);
+                    const userDoc = await getDoc(userRef);
+                    
+                    if(userDoc.exists()){
+                        const userData = userDoc.data();
+                        if(!userData.solvedProblems.includes(problem.id)){
+                            await updateDoc(userRef,{
+                                solvedProblems:arrayUnion(problem.id),
+                            });
+                        }
+                    }
+                    else{
+                        throw new Error("Couldn't run the code");
+                    }
+                    
+                    toast.success("Congrats!! All tests passed!",{position:"top-center", autoClose:3000, theme:"dark"});
+                    setSolved(true);
+                    setSuccess(true);
+                    setTimeout(()=>{
+                        setSuccess(false);
+                    },3000)
+                    
+                }
+            }
+        } catch (error:any) {
+
+            if(error.message.startsWith("AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:")){
+                toast.error("Oops! One or more tests failed",{position:"top-center", autoClose:3000, theme:"dark"})
+            }
+            else{
+                toast.error(error.message,{position:"top-center", autoClose:3000, theme:"dark"})
+            }
+        }
+    }
 
     const handleMouseDown = (): void => {
         setIsDragging(true);
@@ -35,7 +97,18 @@ const Playground:React.FC<PlaygroundProps> = ({problem}) => {
         }
     };
 
+    const handleCodeChange = (value:string) =>{
+        setUserCode(value);
+        localStorage.setItem(`code-${problem.id}`,JSON.stringify(value));
+    }
 
+    useEffect(() => {
+      const code = localStorage.getItem(`code-${problem.id}`);
+      if(user){
+        setUserCode(code? JSON.parse(code):problem.starterCode);
+      }
+    }, [pid,user,problem.starterCode]);
+    
 
     return (
         <>
@@ -50,8 +123,9 @@ const Playground:React.FC<PlaygroundProps> = ({problem}) => {
                     
                     <div className='w-full overflow-auto' style={{ height: topHeight }}>
                         <CodeMirror 
-                            value={problem.starterCode}
+                            value={userCode}
                             theme={vscodeDark}
+                            onChange={handleCodeChange}
                             extensions={[javascript()]}
                             style={{fontSize:16}}
                         />
@@ -116,7 +190,7 @@ const Playground:React.FC<PlaygroundProps> = ({problem}) => {
 
                     </div>
                     <div className='w-full h-[30px]'>
-                        <EditorFooter />
+                        <EditorFooter handleSubmit = {handleSubmit}/>
                     </div>
                 </div> 
             </div>

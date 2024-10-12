@@ -1,17 +1,24 @@
 "use client"
 import React, { useState } from 'react';
+
 import ProblemDescription from './ProblemDescription/ProblemDescription';
 import Playground from './Playground/Playground';
 import { Problem } from '@/utils/types/problem';
+import Confetti from 'react-confetti';
+import useWindowSize from '@/hooks/useWindowSize';
+
 
 type WorkspaceProps = {
     problem : Problem
 };
 const Workspace:React.FC<WorkspaceProps> = ({problem}) => {
 
-    const [leftWidth, setLeftWidth] = useState('calc(50vw - 4px)');
+  const [leftWidth, setLeftWidth] = useState('calc(50vw - 4px)');
   const [rightWidth, setRightWidth] = useState('calc(50vw - 4px)');
   const [isDragging, setIsDragging] = useState(false);
+  const {width,height} = useWindowSize();
+  const [success,setSuccess] = useState(false);
+  const [solved,setSolved] = useState(false);
 
   const handleMouseDown = () => {
     setIsDragging(true);
@@ -40,7 +47,7 @@ const Workspace:React.FC<WorkspaceProps> = ({problem}) => {
         setLeftWidth(newLeftWidth);
         setRightWidth(newRightWidth);
     }
-};
+  };
 
   return (
     <div 
@@ -51,7 +58,7 @@ const Workspace:React.FC<WorkspaceProps> = ({problem}) => {
       onMouseLeave={handleMouseUp}
     >
       <div style={{ width: leftWidth }}>
-        <ProblemDescription problem={problem} />
+        <ProblemDescription problem={problem} _solved={solved}/>
       </div>
       <div
         className='bg-dark-layer-2 cursor-col-resize hover:bg-custom-blue'
@@ -59,7 +66,8 @@ const Workspace:React.FC<WorkspaceProps> = ({problem}) => {
         onMouseDown={handleMouseDown}
       />
       <div style={{ width: rightWidth }}>
-        <Playground problem={problem}/>
+        <Playground problem={problem} setSuccess={setSuccess} setSolved={setSolved}/>
+        {success && <Confetti gravity={0.3} tweenDuration={3000} width={width-1} height={height-51}/>}
       </div>
     </div>
   );

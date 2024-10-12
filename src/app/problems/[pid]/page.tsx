@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 }
 
 // This is your page component
-const ProblemPage = async ({ params }: ProblemPageProps) => {
+const ProblemPage = async ({ params }: ProblemPageProps) => {  
   const problem = problems[params.pid];
 
   if (!problem) {
