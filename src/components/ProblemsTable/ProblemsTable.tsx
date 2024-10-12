@@ -1,9 +1,10 @@
 "use client"
-import { firestore } from '@/firebase/firebase';
+import { auth, firestore } from '@/firebase/firebase';
 import { DBProblem } from '@/utils/types/problem';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, orderBy, query } from 'firebase/firestore';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { AiFillYoutube } from 'react-icons/ai';
 import { BsCheckCircle } from 'react-icons/bs';
 import { IoClose } from 'react-icons/io5';
@@ -15,13 +16,13 @@ type ProblemsTableProps = {
 
 const ProblemsTable:React.FC<ProblemsTableProps> = () => {
     
-    console.log("ref 2");
+    const solvedProblems = useGetSolvedProblems();
     const [youtubePlayer, setYoutubePlayer] = useState({
         isOpen:false,
         videoId:"",
     });
     const [loadingProblems,setLoadingProblems] = useState(true);
-
+    
     const [problems,setProblems] = useState<DBProblem[]>([]);
 
     const handleClick = (videoId:string)=>{
@@ -82,7 +83,8 @@ const ProblemsTable:React.FC<ProblemsTableProps> = () => {
                             return (
                                 <tr key={problem.id} className={`${idx%2 == 1?"bg-dark-layer-1":""}`}>
                                     <th className='px-2 py-4 font-medium whitespace-nowrap text-dark-green-s'>
-                                        <BsCheckCircle fontSize={"18"} width="18"/>
+                                        {solvedProblems.includes(problem.id) && <BsCheckCircle fontSize={"18"} width="18"/>}
+                                        
                                     </th>
                                     <td className='px-6 py-4'>
                                         {problem.link?(
@@ -168,13 +170,34 @@ const LoadingSkeleton = () =>{
                 </td>
             </tr>
         </tbody>
-        //   <div className="flex items-center space-x-12 mt-6 px-6">
-    //     <div className="w-10 h-10 shrink-0 rounded-full bg-dark-layer-1"></div>
-    //     <div className="h-5 sm:w-52 w-[100px] rounded-full bg-dark-layer-1"></div>
-    //     <div className="h-5 sm:w-52 w-[100px] rounded-full bg-dark-layer-1"></div>
-    //     <div className="h-5 sm:w-52 w-[100px] rounded-full bg-dark-layer-1"></div>
-    //     <span className="sr-only">Loading...</span>
-    //   </div>
     );
-  }
+}
+
+function useGetSolvedProblems(){
+    const [solvedProblems,setSolvedProblems] = useState<string[]>([]);
+    const [user] = useAuthState(auth);
+
+    useEffect(()=>{
+        const getSolvedProblems = async()=>{
+            
+            try {
+                const userRef = doc(firestore,"users",user!.uid);
+                const userDoc = await getDoc(userRef);
+
+                if(userDoc.exists()){
+                    setSolvedProblems(userDoc.data().solvedProblems);
+                    console.log(userDoc.data().solvedProblems);
+                }
+                
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        if(user) getSolvedProblems();
+        else setSolvedProblems([]);
+    },[user])
+    return solvedProblems;
+}
+
   

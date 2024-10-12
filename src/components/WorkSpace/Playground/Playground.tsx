@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import { usePathname } from 'next/navigation';
 import { problems } from '@/utils/problems';
 import { arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 type PlaygroundProps = {
     problem:Problem;
@@ -19,11 +20,24 @@ type PlaygroundProps = {
     setSolved:React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+export interface Isettings{
+    fontSize:string,
+    settingsModalOpen:boolean,
+    dropdownOpen:boolean,
+};
+
 const Playground:React.FC<PlaygroundProps> = ({problem, setSuccess,setSolved}) => {
     const [topHeight, setTopHeight] = useState<string>('calc(60vh - 4px)');
     const [bottomHeight, setBottomHeight] = useState<string>('calc(40vh - 4px)');
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [userCode,setUserCode] = useState<string>(problem.starterCode); 
+    const [fontSize, setFontSize] = useLocalStorage("leetClone-fontSize", "16px");
+    const [settings,setSettings] = useState<Isettings>({
+        fontSize:fontSize,
+        settingsModalOpen:false,
+        dropdownOpen:false,
+    });
+
 
     const [user] =useAuthState(auth);
 
@@ -37,14 +51,20 @@ const Playground:React.FC<PlaygroundProps> = ({problem, setSuccess,setSolved}) =
         }
         
         try {
-            const submittedUserCode = userCode.slice(userCode.indexOf(problem.starterFunctionName))
+            const submittedUserCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
+            console.log(submittedUserCode);
             const callBackFunction = new Function(`return ${submittedUserCode}`)();
+            console.log("h1");
             const handlerFunction = problems[pid as string].handlerFunction;
-
+            console.log("h3");
+            
             if(typeof handlerFunction === "function"){
+                console.log("h4");
                 
                 const success = handlerFunction(callBackFunction);
+                console.log("h5");
                 if(success){
+                    console.log("h6");
                     const userRef = doc(firestore,"users",user.uid);
                     const userDoc = await getDoc(userRef);
                     
@@ -112,7 +132,7 @@ const Playground:React.FC<PlaygroundProps> = ({problem, setSuccess,setSolved}) =
 
     return (
         <>
-            <PreferenceNavbar />
+            <PreferenceNavbar settings = {settings} setSettings={setSettings} />
             <div 
                 className="flex flex-col bg-dark-layer-1 h-[calc(100vh-94px)] w-full" 
                 onMouseMove={handleMouseMove}
@@ -127,7 +147,7 @@ const Playground:React.FC<PlaygroundProps> = ({problem, setSuccess,setSolved}) =
                             theme={vscodeDark}
                             onChange={handleCodeChange}
                             extensions={[javascript()]}
-                            style={{fontSize:16}}
+                            style={{fontSize:settings.fontSize}}
                         />
                     </div>
                     <div

@@ -1,15 +1,17 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { AiOutlineFullscreen, AiOutlineFullscreenExit, AiOutlineSetting } from 'react-icons/ai';
+import { Isettings } from '../Playground';
+import SettingsModal from '@/components/Modals/SettingsModal';
 
 type PreferenceNavbarProps = {
-    
+    settings: Isettings;
+    setSettings: React.Dispatch<React.SetStateAction<Isettings>>;
 };
 
-const PreferenceNavbar:React.FC<PreferenceNavbarProps> = () => {
+const PreferenceNavbar:React.FC<PreferenceNavbarProps> = ({settings,setSettings}) => {
     
     const [isFullScreen, setIsFullScreen] = useState(false);
-
     const handleFullScreen = () =>{
         if(isFullScreen){
             document.exitFullscreen();
@@ -51,7 +53,7 @@ const PreferenceNavbar:React.FC<PreferenceNavbarProps> = () => {
                 </button>
             </div>
             <div className='flex items-center m-2'>
-                <button className='preferenceBtn group'
+                <button className='preferenceBtn group' onClick={()=>setSettings({...settings,settingsModalOpen:true})}
                 >
                     <div className='h-4 w-4 text-dark-gray-6 font-bold text-lg'>
                         <AiOutlineSetting />
@@ -72,6 +74,7 @@ const PreferenceNavbar:React.FC<PreferenceNavbarProps> = () => {
                     </div>
                 </button>
             </div>
+            {settings.settingsModalOpen && <SettingsModal settings = {settings} setSettings={setSettings} />}
         </div>
     )
 }
